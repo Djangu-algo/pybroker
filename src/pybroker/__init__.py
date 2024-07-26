@@ -23,7 +23,10 @@ from pybroker.cache import (
 from pybroker.common import BarData, DataCol, Day, FeeMode, PriceType
 from pybroker.context import ExecContext
 from pybroker.config import StrategyConfig
-from pybroker.data import Alpaca, AlpacaCrypto, YFinance
+
+#disabing libraries
+#from pybroker.data import Alpaca, AlpacaCrypto, YFinance
+
 from pybroker.eval import EvalMetrics, BootstrapResult
 from pybroker.indicator import (
     Indicator,
@@ -50,6 +53,11 @@ from pybroker.vect import cross, highv, lowv, returnv, sumv
 
 # Temporary fix for regression in Numba 0.57.0
 # https://github.com/numba/numba/issues/8940
-from numba.np.unsafe import ndarray
+
+#from numba.np.unsafe import ndarray
+
+#changing to current numba
+from numpy import ndarray
+
 
 __version__ = "1.1.40"
