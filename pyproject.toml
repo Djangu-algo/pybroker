@@ -1,88 +1,102 @@
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+[metadata]
+name = lib-pybroker
+version = attr: pybroker.__version__
+url = http://www.pybroker.com
+author = Edward West
+author_email = edwest@pybroker.com
+description = Algorithmic trading with machine learning
+long_description = file: README.md
+long_description_content_type = text/markdown
+license = Apache License 2.0 with Commons Clause
+license_files = LICENSE
+classifiers = License :: Free for non-commercial use
 
-[tool.ruff]
-# Exclude a variety of commonly ignored directories.
-exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".git-rewrite",
-    ".hg",
-    ".ipynb_checkpoints",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pyenv",
-    ".pytest_cache",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    ".vscode",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "site-packages",
-    "venv",
-]
+[options]
+package_dir =
+    =src
+packages = find:
+include_package_data = True
+install_requires =
+    diskcache>=5.4.0,<6
+    joblib>=1.2.0,<2
+    numba>=0.60.0,<1
+    numpy>=1.26.4,<3
+    pandas>=2.2.0,<3
+    progressbar2>=4.1.1,<5
 
-# Same as Black.
-line-length = 79
-indent-width = 4
+[options.packages.find]
+where = src
+exclude =
+    tests*
 
-# Assume Python 3.12
-target-version = "py312"
+[mypy]
+python_version = 3.9
+warn_unused_configs = True
+show_error_context = True
+pretty = True
+namespace_packages = True
+check_untyped_defs = True
 
-[tool.ruff.lint.per-file-ignores]
-"src/pybroker/*.py" = ["E203", "E402"]
-"src/pybroker/__init__.py" = ["F401", "E402"]
-"tests/*.py" = ["E203", "E402"]
-"tests/test_*" = ["E203", "E402", "F403", "F405"]
+[tox:tox]
+envlist = py39,py310,py311,py312
+isolated_build = True
 
-[tool.ruff.lint]
-# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
-# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
-# McCabe complexity (`C901`) by default.
-select = ["E4", "E7", "E9", "F"]
-ignore = ["E402"]  # Module level import not at top of file
+[testenv]
+deps =
+    pytest
+    pytest-cov
+    pytest-instafail
+    pytest-randomly
+    pytest-xdist
+commands =
+    pytest {posargs}
 
-# Allow fix for all enabled rules (when `--fix`) is provided.
-fixable = ["ALL"]
-unfixable = []
+[testenv:typecheck]
+deps =
+    mypy
+commands =
+    mypy --show-error-codes --ignore-missing-imports {posargs:src}
 
-# Allow unused variables when underscore-prefixed.
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+[testenv:format]
+skip_install = True
+deps =
+    ruff
+commands =
+    ruff format {posargs:--diff src tests}
 
-[tool.ruff.format]
-# Like Black, use double quotes for strings.
-quote-style = "double"
+[testenv:lint]
+skip_install = True
+deps =
+    ruff
+commands =
+    ruff check {posargs:src tests}
 
-# Like Black, indent with spaces, rather than tabs.
-indent-style = "space"
+[testenv:docs]
+deps =
+    nbsphinx
+    sphinx
+commands =
+    sphinx-apidoc \
+        --force \
+        --implicit-namespaces \
+        --module-first \
+        --separate \
+        -o docs/reference/ \
+        src/pybroker/
+    sphinx-build -n -W --keep-going -b html docs/ docs/_build/
 
-# Like Black, respect magic trailing commas.
-skip-magic-trailing-comma = false
+[tool:pytest]
+testpaths = tests
+addopts = --strict-markers
+xfail_strict = True
 
-# Like Black, automatically detect the appropriate line ending.
-line-ending = "auto"
+[coverage:run]
+branch = True
 
-# Enable auto-formatting of code examples in docstrings. Markdown,
-# reStructuredText code/literal blocks and doctests are all supported.
-#
-# This is currently disabled by default, but it is planned for this
-# to be opt-out in the future.
-docstring-code-format = false
+[coverage:report]
+show_missing = True
 
-# Set the line length limit used when formatting code snippets in
-# docstrings.
-#
-# This only has an effect when the `docstring-code-format` setting is
-# enabled.
-docstring-code-line-length = "dynamic"
+[coverage:paths]
+source =
+    src/pybroker
+    */site-packages/pybroker
