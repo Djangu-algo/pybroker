@@ -33,7 +33,7 @@ from pybroker.context import (
     set_exec_ctx_data,
     set_pos_size_ctx_data,
 )
-from pybroker.data import AlpacaCrypto, DataSource
+from pybroker.data import DataSource
 from pybroker.eval import BootstrapResult, EvalMetrics, EvaluateMixin
 from pybroker.indicator import Indicator, IndicatorsMixin
 from pybroker.model import ModelSource, ModelsMixin, TrainedModel
@@ -1298,10 +1298,12 @@ class Strategy(
             )
         )  # type: ignore[return-value]
 
+    #def _fractional_shares_enabled(self):
+    #    return self._config.enable_fractional_shares or isinstance(
+    #        self._data_source, AlpacaCrypto
+    #    )
     def _fractional_shares_enabled(self):
-        return self._config.enable_fractional_shares or isinstance(
-            self._data_source, AlpacaCrypto
-        )
+        return self._config.enable_fractional_shares
 
     def _run_walkforward(
         self,
