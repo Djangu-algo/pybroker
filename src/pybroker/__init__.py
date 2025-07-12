@@ -36,9 +36,7 @@ from pybroker.context import (
 )
 from pybroker.config import StrategyConfig as StrategyConfig
 from pybroker.data import (
-    Alpaca as Alpaca,
-    AlpacaCrypto as AlpacaCrypto,
-    YFinance as YFinance,
+    DataSource as DataSource,
 )
 from pybroker.eval import (
     EvalMetrics as EvalMetrics,
